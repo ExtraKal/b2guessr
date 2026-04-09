@@ -515,34 +515,24 @@ function getBlueprintSource(map) {
   off.width = blueprintCanvas.width;
   off.height = blueprintCanvas.height;
   const ctx = off.getContext('2d');
+
+  // Draw the map normally first
   ctx.drawImage(map.img, 0, 0, off.width, off.height);
 
-  try {
-    const imageData = ctx.getImageData(0, 0, off.width, off.height);
-    const data = imageData.data;
+  // Make it look blueprint-ish without turning everything neon blue
+  ctx.save();
+  ctx.filter = 'grayscale(0.35) contrast(1.05) brightness(0.95)';
+  ctx.drawImage(map.img, 0, 0, off.width, off.height);
+  ctx.restore();
 
-    for (let i = 0; i < data.length; i += 4) {
-      const r = data[i];
-      const g = data[i + 1];
-      const b = data[i + 2];
-      const lum = 0.299 * r + 0.587 * g + 0.114 * b;
-      const edgeBoost = lum > 185 ? 28 : lum < 65 ? 10 : 18;
-      data[i] = Math.min(255, lum * 0.45 + 20);
-      data[i + 1] = Math.min(255, lum * 0.65 + 25);
-      data[i + 2] = Math.min(255, lum * 0.80 + 35);
-      data[i + 3] = 255;
-    }
+  // Light blue overlay only
+  ctx.save();
+  ctx.globalCompositeOperation = 'source-atop';
+  ctx.fillStyle = 'rgba(40, 120, 220, 0.14)';
+  ctx.fillRect(0, 0, off.width, off.height);
+  ctx.restore();
 
-    ctx.putImageData(imageData, 0, 0);
-  } catch (error) {
-    console.warn('Blueprint effect fallback used for', map.id, error);
-    ctx.save();
-    ctx.globalCompositeOperation = 'source-atop';
-    ctx.fillStyle = 'rgba(50, 140, 255, 0.25)';
-    ctx.fillRect(0, 0, off.width, off.height);
-    ctx.restore();
-  }
-
+  // Grid
   ctx.strokeStyle = 'rgba(255,255,255,0.08)';
   ctx.lineWidth = 1;
   for (let x = 0; x < off.width; x += 36) {
