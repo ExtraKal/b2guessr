@@ -527,9 +527,9 @@ function getBlueprintSource(map) {
       const b = data[i + 2];
       const lum = 0.299 * r + 0.587 * g + 0.114 * b;
       const edgeBoost = lum > 185 ? 28 : lum < 65 ? 10 : 18;
-      data[i] = Math.min(255, lum * 0.11 + 10);
-      data[i + 1] = Math.min(255, lum * 0.57 + 55 + edgeBoost * 0.3);
-      data[i + 2] = Math.min(255, lum * 1.10 + 90 + edgeBoost);
+      data[i] = Math.min(255, lum * 0.45 + 20);
+      data[i + 1] = Math.min(255, lum * 0.65 + 25);
+      data[i + 2] = Math.min(255, lum * 0.80 + 35);
       data[i + 3] = 255;
     }
 
