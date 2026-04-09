@@ -516,24 +516,25 @@ function getBlueprintSource(map) {
   off.height = blueprintCanvas.height;
   const ctx = off.getContext('2d');
 
-  // Draw the map normally first
+  // Base: keep the original map colors
   ctx.drawImage(map.img, 0, 0, off.width, off.height);
 
-  // Make it look blueprint-ish without turning everything neon blue
+  // Very light desaturated pass on top
   ctx.save();
-  ctx.filter = 'grayscale(0.35) contrast(1.05) brightness(0.95)';
+  ctx.globalAlpha = 0.18;
+  ctx.filter = 'grayscale(1) contrast(1.03) brightness(1.02)';
   ctx.drawImage(map.img, 0, 0, off.width, off.height);
   ctx.restore();
 
-  // Light blue overlay only
+  // Very faint blue tint
   ctx.save();
   ctx.globalCompositeOperation = 'source-atop';
-  ctx.fillStyle = 'rgba(40, 120, 220, 0.14)';
+  ctx.fillStyle = 'rgba(70, 145, 235, 0.05)';
   ctx.fillRect(0, 0, off.width, off.height);
   ctx.restore();
 
-  // Grid
-  ctx.strokeStyle = 'rgba(255,255,255,0.08)';
+  // Subtle grid
+  ctx.strokeStyle = 'rgba(255,255,255,0.07)';
   ctx.lineWidth = 1;
   for (let x = 0; x < off.width; x += 36) {
     ctx.beginPath();
