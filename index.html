@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>B2Guessr</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/styles.css" />
+</head>
+<body>
+  <div class="site-shell">
+    <header class="site-header">
+      <h1 class="site-title">B2GUESSR</h1>
+      <nav class="top-nav" aria-label="Primary navigation">
+        <button class="nav-btn active" data-section="home">HOME</button>
+        <button class="nav-btn" data-section="play">PLAY</button>
+        <button class="nav-btn" data-section="maps">MAPS</button>
+        <button class="nav-btn" data-section="records">RECORDS</button>
+        <button class="nav-btn" data-section="logs">LOGS</button>
+      </nav>
+    </header>
+
+    <main class="content-wrap">
+      <section class="panel section active" id="section-home">
+        <div class="panel-banner">
+          <p class="banner-text">
+            A fanmade Bloons TD Battles 2 geoguessr game. Find the correct map, then click the exact center point where the image came from.
+          </p>
+        </div>
+
+        <h2 class="section-title">SITE FEATURES AND INFORMATION</h2>
+
+        <div class="home-grid">
+          <article class="info-card info-card-large">
+            <h3 class="card-title">BUILD NOTES</h3>
+            <div class="card-copy">
+              <p><strong>Current build notes:</strong></p>
+              <p>- Released!</p>
+            </div>
+            <div class="suggestions-wrap">
+              <a class="secondary-btn suggestions-btn" href="https://forms.gle/DT5ftwSBn4qSWGSR9" target="_blank" rel="noopener noreferrer">SUGGEST CHANGES</a>
+            </div>
+          </article>
+
+          <article class="feature-card example-card">
+            <div class="canvas-head compact-head home-head">
+              <div>
+                <h3>EXAMPLE IMAGE</h3>
+                <p>Example gameplay clue</p>
+              </div>
+              <div class="canvas-badge">Preview</div>
+            </div>
+            <canvas id="homeExampleCanvas" width="220" height="300"></canvas>
+            <div class="how-to-card">
+              <h3 class="card-title small">HOW TO PLAY</h3>
+              <div class="quick-steps">
+                <p>1. Look at the image.</p>
+                <p>2. Pick the map it came from.</p>
+                <p>3. Click where the image belongs on the full map.</p>
+                <p>4. Zoom in if you need a more precise guess.</p>
+                <p>5. Closer clicks score higher, up to 100.</p>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="panel section" id="section-play">
+        <div class="panel-banner compact">
+          <p class="banner-text">
+            Look at the image, pick the correct map, then click the location that matches the center of the image.
+          </p>
+        </div>
+
+        <h2 class="section-title">PLAY B2GUESSR</h2>
+
+        <div class="play-grid">
+          <div class="game-column-main">
+            <div class="controls-wrap">
+              <div class="controls-grid controls-grid-top">
+                <div class="control-box wide-box">
+                  <label for="modeSelect">Game Mode</label>
+                  <select id="modeSelect">
+                    <option value="all">All Maps</option>
+                    <option value="hom">Hall of Masters</option>
+                  </select>
+                </div>
+                <div class="control-box wide-box">
+                  <label for="difficultySelect">Difficulty</label>
+                  <select id="difficultySelect">
+                    <option value="beginner">Beginner</option>
+                    <option value="intermediate" selected>Intermediate</option>
+                    <option value="advanced">Advanced</option>
+                    <option value="expert">Expert</option>
+                    <option value="chimps">CHIMPS</option>
+                  </select>
+                </div>
+                <div class="control-box wide-box">
+                  <label for="modifierSelect">Modifier</label>
+                  <select id="modifierSelect">
+                    <option value="none" selected>None</option>
+                    <option value="bw">Black and White</option>
+                    <option value="invert">Inverted Colors</option>
+                    <option value="pixel">Pixelated</option>
+                    <option value="upside">Upside Down</option>
+                  </select>
+                </div>
+                <div class="control-box">
+                  <label for="roundCountSelect">Rounds</label>
+                  <select id="roundCountSelect">
+                    <option value="5" selected>5</option>
+                    <option value="10">10</option>
+                    <option value="15">15</option>
+                  </select>
+                </div>
+              </div>
+              <div class="controls-grid controls-grid-bottom">
+                <div class="control-box stat-box">
+                  <span class="stat-label">Round</span>
+                  <strong id="roundText">0 / 0</strong>
+                </div>
+                <div class="control-box stat-box">
+                  <span class="stat-label">Score</span>
+                  <strong id="scoreText">0</strong>
+                </div>
+                <div class="control-box stat-box">
+                  <span class="stat-label">Time</span>
+                  <strong id="timeText">00:00.0</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="canvas-grid play-panels-grid">
+              <div class="canvas-card">
+                <div class="canvas-head">
+                  <div>
+                    <h3>IMAGE</h3>
+                    <p id="clueMetaText">Start a game to generate the first clue.</p>
+                  </div>
+                  <div class="canvas-badge" id="difficultyBadge">Intermediate</div>
+                </div>
+                <canvas id="clueCanvas" width="540" height="720"></canvas>
+              </div>
+
+              <div class="canvas-card">
+                <div class="canvas-head">
+                  <div>
+                    <h3>GUESS</h3>
+                    <p id="blueprintMetaText">Select a map, then click the exact center location of the image.</p>
+                  </div>
+                  <div class="canvas-badge" id="selectedMapBadge">No map selected</div>
+                </div>
+                <canvas id="blueprintCanvas" width="540" height="720"></canvas>
+                <div class="canvas-footnote">Tip: use the zoom controls below, or use your mouse wheel. Drag the map to pan when zoomed in.</div>
+              </div>
+
+              <div class="map-select-card play-map-select-card">
+                <div class="map-select-head">
+                  <h3>CHOOSE MAP</h3>
+                  <p id="mapPoolText">Map pool will appear here when the game starts.</p>
+                </div>
+                <div id="mapButtonsGrid" class="map-buttons-grid"></div>
+              </div>
+            </div>
+
+            <div class="status-card compact-status">
+              <div class="action-strip">
+                <button id="startGameBtn" class="primary-btn">START GAME</button>
+                <button id="helpBtn" class="secondary-btn help-btn">HELP</button>
+                <button id="nextRoundBtn" class="secondary-btn" disabled>NEXT</button>
+                <button id="confirmGuessBtn" class="secondary-btn confirm-btn" disabled>CONFIRM GUESS</button>
+                <div class="zoom-cluster">
+                  <span class="zoom-label">Zoom</span>
+                  <button id="zoomOutBtn" class="zoom-btn" type="button">−</button>
+                  <button id="zoomResetBtn" class="zoom-btn reset" type="button">RESET</button>
+                  <button id="zoomInBtn" class="zoom-btn" type="button">+</button>
+                  <span class="zoom-pill" id="zoomLevelText">1.0x</span>
+                </div>
+              </div>
+              <div class="status-message" id="statusMessage">
+                Press <strong>START GAME</strong>, inspect the image, choose the map on the right, then click the image center on the full map.
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel section" id="section-maps">
+        <div class="panel-banner compact">
+          <p class="banner-text">
+            Browse every map currently loaded into the site, then click any map to preview it.
+          </p>
+        </div>
+
+        <h2 class="section-title">MAP BROWSER</h2>
+
+        <div class="maps-page-grid">
+          <article class="map-preview-card">
+            <div class="map-preview-head">
+              <div>
+                <h3>MAP PREVIEW</h3>
+                <p id="browserPreviewMeta">Click a map on the right to preview it here.</p>
+              </div>
+              <div class="canvas-badge" id="browserPreviewBadge">Preview</div>
+            </div>
+            <canvas id="browserPreviewCanvas" width="420" height="560"></canvas>
+            <div class="preview-modifier-wrap">
+              <label for="browserModifierSelect">Preview Modifier</label>
+              <select id="browserModifierSelect">
+                <option value="none" selected>None</option>
+                <option value="bw">Black and White</option>
+                <option value="invert">Inverted Colors</option>
+                <option value="pixel">Pixelated</option>
+                <option value="upside">Upside Down</option>
+              </select>
+            </div>
+          </article>
+
+          <article class="maps-browser-card">
+            <div class="maps-browser-top">
+              <div>
+                <h3 class="card-title small browser-title">BROWSE MAPS</h3>
+                <p class="browser-subtext" id="mapsBrowserSummary">Choose a filter, then click a map to preview it.</p>
+              </div>
+              <div class="maps-filter-row">
+                <button class="filter-btn active" data-filter="all">All Maps</button>
+                <button class="filter-btn" data-filter="hom">HOM Only</button>
+              </div>
+            </div>
+            <div class="maps-browser-list" id="mapsList"></div>
+          </article>
+        </div>
+      </section>
+      <section class="panel section" id="section-records">
+        <div class="panel-banner compact">
+          <p class="banner-text">
+            Personal bests are tracked separately for every game mode, difficulty, modifier, and round count.
+          </p>
+        </div>
+
+        <h2 class="section-title">RECORDS</h2>
+
+        <article class="records-table-card">
+          <div class="maps-browser-top">
+            <div>
+              <h3 class="card-title small browser-title">BEST SCORE AND TIME</h3>
+              <p class="browser-subtext">Filter by mode, difficulty, modifier, or rounds to narrow your saved records.</p>
+            </div>
+            <div class="records-filters-grid">
+              <div class="records-filter-box">
+                <label for="recordModeFilter">Mode</label>
+                <select id="recordModeFilter">
+                  <option value="any" selected>Any</option>
+                  <option value="all">All Maps</option>
+                  <option value="hom">Hall of Masters</option>
+                </select>
+              </div>
+              <div class="records-filter-box">
+                <label for="recordDifficultyFilter">Difficulty</label>
+                <select id="recordDifficultyFilter">
+                  <option value="any" selected>Any</option>
+                  <option value="beginner">Beginner</option>
+                  <option value="intermediate">Intermediate</option>
+                  <option value="advanced">Advanced</option>
+                  <option value="expert">Expert</option>
+                  <option value="chimps">CHIMPS</option>
+                </select>
+              </div>
+              <div class="records-filter-box">
+                <label for="recordModifierFilter">Modifier</label>
+                <select id="recordModifierFilter">
+                  <option value="any" selected>Any</option>
+                  <option value="none">None</option>
+                  <option value="bw">Black and White</option>
+                  <option value="invert">Inverted Colors</option>
+                  <option value="pixel">Pixelated</option>
+                  <option value="upside">Upside Down</option>
+                </select>
+              </div>
+              <div class="records-filter-box">
+                <label for="recordRoundsFilter">Rounds</label>
+                <select id="recordRoundsFilter">
+                  <option value="any" selected>Any</option>
+                  <option value="5">5</option>
+                  <option value="10">10</option>
+                  <option value="15">15</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table class="records-table">
+              <thead>
+                <tr>
+                  <th>Mode</th>
+                  <th>Difficulty</th>
+                  <th>Modifier</th>
+                  <th>Rounds</th>
+                  <th>Best Score</th>
+                  <th>Best Time</th>
+                </tr>
+              </thead>
+              <tbody id="recordsTableBody"></tbody>
+            </table>
+          </div>
+        </article>
+      </section>
+
+      <section class="panel section" id="section-logs">
+        <div class="panel-banner compact">
+          <p class="banner-text">
+            Every completed set is saved here, including the mode, difficulty, modifier, score, and run time.
+          </p>
+        </div>
+
+        <h2 class="section-title">ATTEMPT LOGS</h2>
+
+        <div class="records-overview" id="logsOverview"></div>
+
+        <article class="logs-list-card">
+          <div class="maps-browser-top">
+            <div>
+              <h3 class="card-title small browser-title">COMPLETED RUNS</h3>
+              <p class="browser-subtext">Showing your 5 most recent completed attempts. Total attempts and latest run are still tracked above.</p>
+            </div>
+          </div>
+          <div class="logs-list" id="logsList"></div>
+        </article>
+      </section>
+
+    </main>
+  </div>
+
+  <div class="modal hidden" id="helpModal" aria-hidden="true">
+    <div class="modal-backdrop" id="helpBackdrop"></div>
+    <div class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="helpTitle">
+      <button class="modal-close" id="closeHelpBtn" aria-label="Close help">×</button>
+      <h2 id="helpTitle">How to Play</h2>
+      <div class="modal-copy">
+        <p><strong>1.</strong> Start a game and look at the image on the left.</p>
+        <p><strong>2.</strong> Pick the map you think the image came from.</p>
+        <p><strong>3.</strong> On the full map, click where the <strong>center of the image</strong> should be, then press <strong>CONFIRM GUESS</strong>.</p>
+        <p><strong>4.</strong> If you picked the wrong map, you get <strong>0</strong> for that round.</p>
+        <p><strong>5.</strong> If you picked the right map, you can earn up to <strong>100 points</strong> based on how close your click is to the true center.</p>
+        <p><strong>Zoom:</strong> use the zoom controls or your mouse wheel, then drag the map to pan around.</p>
+        <p><strong>Modifiers:</strong> black and white, inverted colors, pixelated, and upside down only affect the image.</p>
+        <p><strong>Timer:</strong> each run tracks your total time, with separate personal bests for each ruleset.</p>
+        <p><strong>Difficulties:</strong> Beginner shows the largest crop. CHIMPS is the most zoomed in.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal hidden" id="roundModal" aria-hidden="true">
+    <div class="modal-backdrop" id="roundBackdrop"></div>
+    <div class="modal-panel result-panel" role="dialog" aria-modal="true" aria-labelledby="roundResultTitle">
+      <h2 id="roundResultTitle">Round Result</h2>
+      <div class="modal-copy" id="roundResultBody"></div>
+      <div class="modal-result-note">
+        <span><span class="legend-dot guess"></span>Your guess</span>
+        <span><span class="legend-dot answer"></span>Correct center</span>
+      </div>
+      <div class="modal-actions">
+        <button class="secondary-btn" id="roundModalNextBtn">NEXT</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="assets/js/maps.js"></script>
+  <script src="assets/js/app.js"></script>
+</body>
+</html>
